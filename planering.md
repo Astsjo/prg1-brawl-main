@@ -5,14 +5,11 @@ vilka kort du bygger det med. Visa planen och korten för läraren innan du bör
 
 ## Mitt spel
 
-# Kraven är samma för alla. Vad gör ditt spel till ditt? Vem är du, vem slåss du mot, och var? Vad
-# an spelaren välja mellan varje tur? Finns det en regel som bara ditt spel har?
 
 Jag tänker försöka bygga ett system som kommer inkludera ett system med förråd och föremål man kan använda mellan rundor (eller attackera istället), slumpade fiender varje gång, och ett upprepande system tills man kanske möter en slutboss. Varje fiende kan kanske ge pengar och/eller xp så man kan förbättra sig inför det. 
 
 ## Fyra frågor planen ska svara på
 
-# Tänk igenom dessa steg på samma sätt som vi har gjort spårningen tillsammans på tavlan. Vilka variabler behöver du? Vilka villkor? Vad ska de göra? Vad sker i nästa steg/rad?
 
 1. Var börjar programmet, och vad finns innan första turen?
 
@@ -41,7 +38,13 @@ med vanliga ord, en rad per steg, utan att bry dig om Python.
 
 Gå igenom Mönsterkortet med planen framför dig. Vilka mönster känner du igen?
 
--
+- Inläsning
+- Standardvärdet
+- Tills-mönstret
+- Menymönstret
+- Beräknaren (troligen)
+- Valideraren (sen tidigare)
+- Persistent lagring (om jag har tid, inte del av planen)
 
 ## Mina kort
 
@@ -60,6 +63,3 @@ commitmeddelande. Exempel:
 kurswebben och gör dem till dina kort.
 
 Skriv listan här och skapa korten efteråt, eller direkt som kort.
-
-- a
-- b
