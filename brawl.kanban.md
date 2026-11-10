@@ -25,20 +25,8 @@ se exemplen i readme.md, eller hitta på ett eget syfte
 <!-- id: task-1793100000006-6 -->
 rubrikerna längst ner i readme.md. faser.md fylls i längs vägen och blir klar sist
 <!-- priority: high -->
+<!-- due: 2026-11-19 -->
 <!-- source: faser.md:1 -->
-
-#### Item-system
-<!-- id: task-1793699325939-54 -->
-Ett system som inkluderar föremål och någonstans att använda dem
-- [ ] Förråd
-- [ ] Föremål
-
-#### Damage-system
-<!-- id: task-1793699396621-73 -->
-Hur skadan ska baseras. Får tänka på skydd, items och annat som kan kanske påverka skadan.
-- [ ] Start-skada
-- [ ] Försvar
-- [ ] Ökning av skada
 
 #### Fiender
 <!-- id: task-1793699518703-94 -->
@@ -68,11 +56,11 @@ namnet frågas efter, båda har HP och startvärdena syns. För stort för ett p
 <!-- priority: high -->
 <!-- source: main.py:1 -->
 
-#### Funktioner för menyer
-<!-- id: task-1793699258656-21 -->
-Två funktioner till de två olika menyerna: den under en fight och den mellan.
-- [ ] Fight-meny
-- [ ] Mellan-meny
+#### Item-system
+<!-- id: task-1793699325939-54 -->
+Ett system som inkluderar föremål och någonstans att använda dem
+- [x] Förråd
+- [ ] Föremål
 
 ## Done
 
@@ -85,3 +73,18 @@ forka och klona repot, öppna det i VS Code
 planering.md: ditt spel, planen och dina kort. Lägg in korten här. Visa läraren innan du skriver kod
 <!-- priority: critical -->
 <!-- source: planering.md:1 -->
+
+#### Funktioner för menyer
+<!-- id: task-1793699258656-21 -->
+Två funktioner till de två olika menyerna: den under en fight och den mellan.
+- [x] Fight-meny
+- [x] Mellan-meny
+
+#### Tutorials
+<!-- id: task-1794305576499-336 -->
+
+#### Damage-system
+<!-- id: task-1793699396621-73 -->
+Hur skadan ska baseras. Får tänka på skydd, items och annat som kan kanske påverka skadan.
+- [x] Försvar
+- [x] Ökning av skada
