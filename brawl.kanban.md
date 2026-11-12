@@ -62,6 +62,14 @@ Ett system som inkluderar föremål och någonstans att använda dem
 - [x] Förråd
 - [ ] Föremål
 
+#### Funktioner för menyer
+<!-- id: task-1793699258656-21 -->
+Två funktioner till de två olika menyerna: den under en fight och den mellan.
+- [x] Fight-meny
+- [x] Mellanmeny
+- [ ] Upgraderingsmeny
+- [x] Shop-meny
+
 ## Done
 
 #### Forka repot
@@ -73,12 +81,6 @@ forka och klona repot, öppna det i VS Code
 planering.md: ditt spel, planen och dina kort. Lägg in korten här. Visa läraren innan du skriver kod
 <!-- priority: critical -->
 <!-- source: planering.md:1 -->
-
-#### Funktioner för menyer
-<!-- id: task-1793699258656-21 -->
-Två funktioner till de två olika menyerna: den under en fight och den mellan.
-- [x] Fight-meny
-- [x] Mellan-meny
 
 #### Tutorials
 <!-- id: task-1794305576499-336 -->

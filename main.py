@@ -1,7 +1,7 @@
 import random
 import time
 from input_validator_EN import valid_float_input, valid_int_input, valid_int_string_input, valid_alternative_input
-import os
+import sys
 from any_key_continue import press_any_key
 
 def fight_menu(name, player_hp, enemy_name, enemy_hp):
@@ -55,13 +55,70 @@ def inventory(items, coins):                            # Definerar funktionen o
     allowed = list(range(1, len(available) + 1)) + ["e"]    # Skapar en lista med de tillåtna alternativen att välja mellan
     inventory_choice = valid_alternative_input(
         f"Choose an alternative [1-{len(available)}] or [e] to exit"
-        ), allowed                                          # Ber användaren av sitt val bland de tillgängliga alternativen
+        , allowed)                                          # Ber användaren av sitt val bland de tillgängliga alternativen
 
     if inventory_choice == "e":                             # Om användaren väljer att avsluta
         return None                                             # Returnera inget (avsluta)
 
     chosen_item = available[inventory_choice - 1]           # Sätter valet till en item i listan
     return chosen_item                                      # Returnar användarens val
+
+def roll_shop(store_items):
+    available = []
+    for name, values in store_items.items():
+        if values["chance"] > random.random():
+            available.append(name)
+    return available
+
+def shop(store_items, available, items, coins):
+    while True:
+        print("#"*30, "\n")
+        if not available:
+            print("Nothing is available for sale right now.")
+            press_any_key()
+            return None, coins
+
+        for number, name in enumerate(available, start=1):
+            print(f"({number}) {name}: {store_items[name]['price']}")
+
+        allowed = list(range(1, len(available) + 1)) + ["e"]
+        shop_choice = valid_alternative_input(f"\nChoose an alternative [1-{len(available)}] or [e] to exit: ", allowed)
+        if shop_choice == "e":
+            return None, coins
+        if ((coins - (store_items[available[shop_choice-1]]["price"])) >= 0):
+            coins -= store_items[available[shop_choice-1]]["price"]
+            print(f"You now have 1 more {available[shop_choice-1]}.")
+            press_any_key()
+            return available[shop_choice-1], coins
+        else:
+            print("\nYou don't have enough money for that!")
+
+def upgrade_menu(upgrade_points, player_xp, player_stats):
+    available = []
+    while True:
+        if upgrade_points <= 0:
+            print("#"*30)
+            print(f"\nYou don't have any upgrade points right now.")
+            print(f"You have {player_xp}/1000 xp.\n")
+            print("#"*30)
+            press_any_key()
+            return upgrade_points
+        else:
+            print("#"*30)
+            print("\nCurrent stats:")
+            print(f"Damage level: {player_stats["Damage_level"]["level"]}")
+            print(f"Luck level: {player_stats["luck_level"]["level"]}")
+            print(f"Defence level: {player_stats["defence_level"]["level"]}\n")
+            for upgrade in player_stats:
+                available.append(upgrade)
+            for number, upgrade in enumerate(available, start=1):
+                print(f"({number}) {upgrade}: {player_stats[upgrade]['level']}\n")
+            allowed = list(range(1, len(available) + 1)) + ['e']
+            upgrade_choice = valid_alternative_input(f"Choose an alternative [1-{len(available)}] or [e] to exit: ", allowed)
+            if upgrade_choice == "e":
+                return upgrade_points, player_stats
+
+
 
 def player_damage(player_damage_level, player_luck_level, dice_count, item_bonus, enemy_level_bonus):
     if dice_count == 1:
@@ -75,10 +132,10 @@ def player_damage(player_damage_level, player_luck_level, dice_count, item_bonus
     damage /= (enemy_level_bonus+1)
     return damage
 
-def enemy_damage(enemy_level_bonus, enemy_max_damage, player_defense):
+def enemy_damage(enemy_level_bonus, enemy_max_damage, player_defence_level):
     damage = random.randint(1, enemy_max_damage)
     damage *= (enemy_level_bonus+1)
-    damage /= player_defense
+    damage /= player_defence_level
     return damage
 
 def grammar_tutorial():
@@ -135,24 +192,135 @@ enemy = random.choice(enemies)
 while restart:
     player_hp = 100
     enemy_hp = 100
-    items = {"item1": 0, "item2": 0, "item3": 0}
-    player_luck_level = 1
-    enemy_max_damage = 6
+    items = {
+        "item1": 0,
+        "item2": 0,
+        "item3": 0
+        }
+    item_list = [
+        "item1",
+        "item2",
+        "item3"
+        ]
+    store_items = {
+        "item1": {"chance": 1.0, "price": 10},
+        "item2": {"chance": 0.5, "price": 20},
+        "item3": {"chance": 0.3, "price": 35}
+    }
+    player_stats = {
+        "Luck_level": {"level": 1, "max_level": 4},
+        "Defence_level": {"level": 1, "max_level": None},
+        "Damage_level": {"level": 1, "max_level": None},
+        "Player_level": 1
+    }
+
+    enemy_max_damage = 5
     enemy_level_bonus = 0
-    player_defense = 1
-    player_damage_level = 1
     dice_count = 1
     item_bonus = 0
+    coins = 0
+    player_xp = 0
+    player_level = 1
+    upgrade_points = 0
+    rounds = 0
 
-    if first_time:
-        print("\nWelcome!")
-        tutorial_grammar = input("Would you like a tutorial for the controls? [Y/n]: ").lower().strip()
-        if tutorial_grammar != "n":
-            grammar_tutorial()
-        tutorial_game = input("Would you like a tutorial for how the game will work? [Y/n]: ").lower().strip()
-        if tutorial_game != "n":
-            game_tutorial()
-    first_time = False
-    choice = fight_menu(name, player_hp, enemy, enemy_hp)
-    if choice == 1:
-        player_hp -= enemy_damage()
+    while player_hp > 0:
+        if first_time:
+            print("\nWelcome!")
+            tutorial_grammar = input("Would you like a tutorial for the controls? [Y/n]: ").lower().strip()
+            if tutorial_grammar != "n":
+                grammar_tutorial()
+            tutorial_game = input("Would you like a tutorial for how the game will work? [Y/n]: ").lower().strip()
+            if tutorial_game != "n":
+                game_tutorial()
+            while player_hp > 0 and enemy_hp > 0:
+                choice = fight_menu(name, player_hp, enemy, enemy_hp)
+                enemy_alive = True
+                if choice == 1:
+                    player_hp -= enemy_damage(enemy_level_bonus, enemy_max_damage, player_defence_level)
+                    enemy_hp -= player_damage(player_damage_level, player_luck_level, dice_count, item_bonus, enemy_level_bonus)
+                elif choice == 2:
+                    item_choice = inventory(items, coins)
+                elif choice == 3:
+                    sys.exit()
+            first_time = False
+        if enemy_hp < 0 and enemy_alive:
+            enemy_alive = False
+            rnd_num = random.randint(1, (1+player_luck_level))
+            if rnd_num >= 2:
+                item_dropped = random.choice(item_list)
+            rnd_xp = random.randint(15, (100*player_luck_level))
+            rnd_coin_drop = random.randint(10, (20*player_luck_level)) 
+            print(f"\nYou defeated {enemy}!")
+            print("It dropped: ")
+            print(f"{rnd_xp} xp")
+            print(f"{rnd_coin_drop} coins")
+            if rnd_num == 2:
+                print(f"1 {item_dropped}\n")
+            player_xp += rnd_xp
+            coins += rnd_coin_drop
+            if player_xp >= 1000:
+                upgrade_points += 1
+                player_xp -= 1000
+            player_hp += 50
+            rounds += 1
+            available = roll_shop(store_items)
+        elif player_hp < 0:
+            print("You died and lost!")
+            break
+        choice = main_menu(name, player_hp, player_defence_level, player_level, player_xp, upgrade_points, coins)
+        if choice == 1:
+            enemy_alive = True
+            while player_hp > 0 and enemy_hp > 0:
+                choice = fight_menu(name, player_hp, enemy, enemy_hp)
+                enemy_alive = True
+                if choice == 1:
+                    player_hp -= enemy_damage(enemy_level_bonus, enemy_max_damage, player_defence_level)
+                    enemy_hp -= player_damage(player_damage_level, player_luck_level, dice_count, item_bonus, enemy_level_bonus)
+                elif choice == 2:
+                    item_choice = inventory(items, coins)
+                elif choice == 3:
+                    sys.exit()
+            if enemy_hp < 0 and enemy_alive:
+                enemy_alive = False
+                rnd_num = random.randint(1, (1+player_luck_level))
+                if rnd_num >= 2:
+                    item_dropped = random.choice(item_list)
+                rnd_xp = random.randint(15, (100*player_luck_level))
+                rnd_coin_drop = random.randint(10, (20*player_luck_level)) 
+                print(f"\nYou defeated {enemy}!")
+                print("It dropped: ")
+                print(f"{rnd_xp} xp")
+                print(f"{rnd_coin_drop} coins")
+                if rnd_num == 2:
+                    print(f"1 {item_dropped}\n")
+                player_xp += rnd_xp
+                coins += rnd_coin_drop
+                if player_xp >= 1000:
+                    upgrade_points += 1
+                    player_xp -= 1000
+                player_hp += 50
+                rounds += 1
+                available = roll_shop(store_items)
+            elif player_hp < 0:
+                print("You died and lost!")
+                break
+        elif choice == 2:
+            purchase, coins = shop(store_items, available, items, coins)
+            if not name == None:
+                items[purchase] += 1
+#        elif choice == 3:
+#            upgrade_menu()
+        elif choice == 4:
+            item_choice = inventory(items, coins)
+            if item_choice == "item1":
+                pass
+            elif item_choice == "item2":
+                pass
+            elif item_choice == "item3":
+                pass
+#        elif choice == 5:
+#            boss_fight_menu()
+        elif choice == 6:
+            sys.exit()
+    break
